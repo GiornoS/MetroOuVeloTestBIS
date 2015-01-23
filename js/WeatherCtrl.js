@@ -102,10 +102,9 @@ angular.module('app', ['ionic'])
 		alert('Impossible de récupérer les informations');
 	}
 	
-
-
-	//$scope.geolocate();
 	$scope.Math = Math; //Importation du module Math pour arrondir les températures
+	$scope.geolocate();
+
 });
 
 
