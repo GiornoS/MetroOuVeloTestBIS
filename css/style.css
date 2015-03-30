@@ -1,7 +1,32 @@
+/*
+ TOUTES LES PAGES
+*/
+
+.header_definir_un_trajet
+{    
+    position: relative;
+}
+
+.tab-item
+{
+    margin: auto;
+}
+
+/*
+ DEFINIR UNE ADRESSE
+*/
+
+.city_search
+{
+    position: relative;
+    margin: 40px
+}
+
 .validerButton
 {
 	border-radius:10px;
 	position:relative;
+    
 }
 
 .geolocaliserButton
@@ -15,9 +40,186 @@
 	position:relative;	
 }
 
-.liste-temperature
+.liste_temperature
 {
-
+	margin-top:20px;
 }
 
+.weather_icon
+{
+	width:30%;
+	height:90%;
+	position:absolute;
+	left:0px;
+	bottom:8%;
+}
+.affichage_date
+{
+}
 
+/*
+ DEFINIR UN TRAJET
+*/
+
+.heure_de_depart
+{
+    position: relative;
+    top: 10px;    
+}
+.hour_select_definir_un_trajet
+{
+    width : 80px;
+    bottom:14px; 
+}
+
+.clock_depart
+{
+    bottom:14px;
+}
+
+.validerButtonTrajet
+{
+	z-index:10;
+	border-radius:10px;
+	position:relative;
+}
+
+#geolocate_button
+{
+	z-index:10;
+	position:absolute;
+    width:60px;
+    height:10px;
+	bottom:100px;
+	right:10px;
+    box-shadow: 20px;
+}
+
+#navigate_button
+{
+	z-index:10;
+	position:absolute;
+    width:60px;
+    height:10px;
+	bottom:160px;
+	right:10px;
+}
+
+/*
+ CARTE
+*/
+
+.scroll 
+{
+    height: 100%;
+}
+
+.big_map
+{
+    position: absolute;
+	width: 100%;
+    height: 88%;
+    bottom: 0%;    
+}
+
+.small_map
+{
+    position: absolute;
+	width: 100%;
+    height: 52.3%;
+    bottom: 35%;
+}
+
+.card
+{
+    border-radius: 10px;
+}
+
+.definir_un_trajet_card
+{
+    position:absolute;
+    top:80px;
+    width:96%;
+}
+
+.search_start
+{
+    top: -17px;
+}
+
+.search_end
+{
+    top: -17px;
+	margin-top:0.5%;
+}
+
+.heure_de_depart
+{
+    top: -17px;
+}
+
+.footer_card_definir_un_trajet
+{
+    bottom:-13px;
+    width:96%;
+    position:absolute;
+}
+
+.modal_affichage_trajet
+{
+    position: absolute;
+    top: 65%;
+    width: 100%;
+    height: 35%;
+    min-height: initial;
+    overflow: auto;
+}
+
+.km_modal
+{
+    width:50%;
+}
+
+.h_modal
+{
+    width: 50%;
+    position: absolute;
+    top: 0px;
+    right:0px;
+}
+
+.PanelTrajet
+{
+    position: absolute;
+    width: 100%;
+    top:44px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #999;
+    overflow: scroll;
+}
+
+/*
+ AUTOCOMPLETION
+*/
+
+.pac-item
+{
+    height: 50px;
+    
+}
+
+.pac-container
+{
+    border-radius: 10px;
+}
+
+.pac-matched
+{
+    color: #4a87ee;
+}
+
+.pac-item-query
+{
+    font-size: 170%;
+}
