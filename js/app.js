@@ -17,22 +17,8 @@ starter.run(function ($ionicPlatform) {
             StatusBar.styleDefault();
         }
 
-        // GOOGLE ANALYTICS
 
-    /*
-        $cordovaGoogleAnalytics.startTrackerWithId('UA-59584237-1');  
-    */
     });
+    
 });
 
-starter.config(function($stateProvider) {
-    $stateProvider
-        .state('index', {
-            url: '/',
-            templateUrl: 'index.html'
-        })
-        .state('Definir_un_trajet', {
-            url: '/templates',
-            templateUrl: 'Definir_un_trajet.html'
-        });
-});
