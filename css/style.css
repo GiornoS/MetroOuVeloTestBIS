@@ -316,4 +316,13 @@
     font-size: 170%;
 }
 
+.menu-options
+{
+    font-weight : 500;
+}
 
+.item-divider-menu
+{
+    font-weight: bolder;
+    color: #387ef5;
+}
