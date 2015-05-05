@@ -82,7 +82,7 @@
                 <a class="button button-icon icon ion-android-stopwatch clock_depart" ng-click="setTime()"></a>
             
                 <center>
-                    <button ng-click="calculate(detailsCityStart, detailsCityEnd, minute_choisie, heure_choisie)" class="button button-outline button-positive validerButtonTrajet" ng-disabled="{{disablingValiderButton}}==2">
+                    <button ng-click="calculate(detailsCityStart, detailsCityEnd, minute_choisie, heure_choisie, false)" class="button button-outline button-positive validerButtonTrajet" ng-disabled="{{disablingValiderButton}}==2">
                         Valider
                     </button>
                 </center>
@@ -215,7 +215,8 @@
             <h1 class="title">Configuration</h1>
         </ion-header-bar>
         <ion-content>
-            <ul class="list">
+            <img class="icon icon-menu" src="res/img/bandeaumetrovelibBIS.png"></img>
+            <ul class="list debut-menu">
                 
                 <div class="item item-divider item-divider-menu">
                     <center>Options</center>
@@ -225,8 +226,18 @@
                 </ion-toggle>
                 <ion-toggle class="menu-options" id="geolocalisationInitialeOption" ng-click="saveSettings(geolocalisationPref, 2)" ng-model="geolocalisationPref" ng-checked="geolocalisationInit">
                     Géolocalisation
-                </ion-toggle>
-                
+                </ion-toggle> 
+                <div class="item item-button-right menu-options" ng-click="changeMoyenTransport()">
+                     Moyen de transport
+                        <img class="icon icon-transport-menu" src="res/img/android-subway.png" ng-show="metroChoisi"></img>
+                        <img class="icon icon-transport-menu" src="res/img/android-bicycle.png" ng-show="veloChoisi"></img>
+                </div>
+            </ul>
+            <ul class="list fin-menu">
+                <a class="item item-icon-left item-positive" ng-click="">
+                    <i class="icon ion-email"></i>
+                    Envoyer un commentaire
+                </a>
             </ul>
         </ion-content>
     </ion-side-menu>

@@ -304,8 +304,6 @@
     pointer-events: all;
 }
 
-
-
 .pac-matched
 {
     color: #4a87ee;
@@ -316,6 +314,10 @@
     font-size: 170%;
 }
 
+.debut-menu
+{
+    top: -5px;
+}
 .menu-options
 {
     font-weight : 500;
@@ -325,4 +327,25 @@
 {
     font-weight: bolder;
     color: #387ef5;
+}
+
+.fin-menu
+{
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+}
+
+.icon-menu
+{
+    width: 100%;
+}
+
+.icon-transport-menu
+{
+    border-width: 0px;
+    height: 40px;
+    position: absolute;
+    right: 20px;
+    top: 13%;
 }

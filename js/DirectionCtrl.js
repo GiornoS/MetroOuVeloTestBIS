@@ -61,8 +61,32 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     $scope.showButtonsOnMap = true;
     $scope.disablingValiderButton = 0;
     directionsService = new google.maps.DirectionsService(); // Service de calcul d'itinéraire
+    $scope.veloChoisi = true;
+    $scope.choixDeTransport = google.maps.DirectionsTravelMode.BICYCLING;
 
     
+    
+    /*** FONCTION PERMETTANT A L'UTILISATEUR DE CHOISIR LE MOYEN DE TRANSPORT POUR LE CALCUL DU TRAJET ***/
+    
+    /**
+    ***
+    **/
+    
+    $scope.changeMoyenTransport = function () {
+        if ($scope.metroChoisi) {
+            $scope.metroChoisi = false;
+            $scope.veloChoisi = true;
+            $scope.choixDeTransport = google.maps.DirectionsTravelMode.BICYCLING;
+            // On recalcule le trajet avec le nouveau moyen de transport
+            $scope.calculate($scope.donneesSauvegardees[0], $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true);
+        } else {
+            $scope.metroChoisi = true;
+            $scope.veloChoisi = false;
+            $scope.choixDeTransport = google.maps.TravelMode.TRANSIT;
+            // On recalcule le trajet avec le nouveau moyen de transport
+            $scope.calculate($scope.donneesSauvegardees[0], $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true);
+        }
+    };
 
     
     /*** FONCTION PERMETTANT DE DÉCOUPER LE TRAJET À VÉLO EN TRONÇON D'UNE DEMI-HEURE ***/
@@ -633,6 +657,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                 
                 var geo = new google.maps.LatLng(response.results[0].geometry.location.lat, response.results[0].geometry.location.lng);
                 $scope.city_start = response.results[0].formatted_address;
+                $scope.verif_city_start = response.results[0].formatted_address;
                 // On affiche la ville de départ dans le formulaire
                 $scope.detailsCityStart = {geometry: {location: geo}};
                 document.getElementById('city_start').value = response.results[0].formatted_address;
@@ -782,12 +807,12 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     *** @return JSONObject $scope.donnees_du_trajet : données du trajet permettat d'afficher la distance à parcourir et le temps prévu pour ce trajet
     *** @return boolean $scope.show_donnees_du_trajet : affiche la carte avec les données du trajet
     **/
-    $scope.calculate = function (city_start, city_end, minute_choisie, heure_choisie) {
+    $scope.calculate = function (city_start, city_end, minute_choisie, heure_choisie, isRecalculation) {
         isPhoneConnected();
         // Récupère la location de départ voulue (géolocalisation ou adresse entrée)
-        var CITYSTART;
+        var CITYSTART, CITYEND;
         // On vérifie si c'est la géolocalisation qui est utilisée ou non
-        if ($scope.city_start === document.getElementById("city_start").value) {
+        if ($scope.verif_city_start === document.getElementById("city_start").value) {
             CITYSTART = $scope.detailsCityStart;
         } else {
             if (city_start.name + ", Paris, France" === document.getElementById("city_start").value || city_start.formatted_address === document.getElementById("city_start").value) {
@@ -798,14 +823,22 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                     $scope.city_start = city_start.name + ", Paris, France";
                 }
             }
-
-
         }
 
-
-
-
-        if (CITYSTART && city_end) {
+        if (city_end.formatted_address === document.getElementById("city_end").value) {
+            CITYEND = city_end;
+        } else {
+            if (city_end.name + ", Paris, France" === document.getElementById("city_end").value || city_end.formatted_address === document.getElementById("city_end").value) {
+                CITYEND = city_end;
+            }
+        }
+        
+        // Permet de sauvegarder les entrées du dernier chemin calculé dans le cas du recalcule lors d'un changement de moyen de transport
+        $scope.donneesSauvegardees = [CITYSTART, CITYEND, minute_choisie, heure_choisie];
+        
+        
+        
+        if (CITYSTART && CITYEND) {
             document.addEventListener("deviceready", function () {
                 function waitForAnalytics() {
                     if (typeof analytics !== 'undefined') {
@@ -864,11 +897,11 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
 
             request = {
                 origin        : CITYSTART.geometry.location,
-                destination   : city_end.geometry.location,
+                destination   : CITYEND.geometry.location,
                 transitOptions: {
                     departureTime: new Date(millisecondes_unix)
                 },
-                travelMode    : google.maps.DirectionsTravelMode.BICYCLING, // Mode de conduite
+                travelMode    : $scope.choixDeTransport, // Mode de conduite
                 unitSystem    : google.maps.UnitSystem.METRIC
             };
             
@@ -881,7 +914,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                     $scope.donnees_du_trajet = response; //permet de récupérer la durée et la distance
                     
                     requestNearbySearch = {
-                        location : city_end.geometry.location,
+                        location : CITYEND.geometry.location,
                         rankBy : google.maps.places.RankBy.DISTANCE,
                         types : ['subway_station']
                     };
@@ -893,23 +926,26 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                     });
                     // On affiche le footer avec la distance et la durée
                     $scope.show_donnees_du_trajet = true;
-                    $scope.showCard(); //on cache la carte de défintion d'itinéraire
+                    if (!(isRecalculation)) {
+                        $scope.showCard(); //on cache la carte de défintion d'itinéraire si ce n'est pas un recalcul
+                        
+                        // On cherche la station de vélib la plus proche
 
-                    // On cherche la station de vélib la plus proche
-                 
-                    stationVelibPlusProche(response.routes[0].legs[0].end_location);
-                    
-                    
-                                      
+                        stationVelibPlusProche(response.routes[0].legs[0].end_location);
 
-                    
 
-                    // On cherche la météo pour afficher la recommandation
-                    $timeout(function () {
-                        $ionicLoading.hide();
-                        $scope.searchWeather(response.routes[0].legs[0].end_location);
-                    }, 1000);
-                    
+
+
+
+
+                        // On cherche la météo pour afficher la recommandation
+                        $timeout(function () {
+                            $ionicLoading.hide();
+                            $scope.searchWeather(response.routes[0].legs[0].end_location);
+                        }, 1000);
+                    } else {
+                        $ionicLoading.hide(); // Si c'est un recalcul, il faut juste arrêter de montrer l'icône de chargement
+                    }
 
                 }
             });
