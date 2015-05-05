@@ -894,7 +894,6 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                     showBackdrop: false
                 });
             });*/
-
             request = {
                 origin        : CITYSTART.geometry.location,
                 destination   : CITYEND.geometry.location,
@@ -908,7 +907,6 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
 
             directionsService.route(request, function (response, status) { // Envoie de la requête pour calculer le parcours
                 if (status === google.maps.DirectionsStatus.OK) {
-                    
                     directionsDisplay.setDirections(response); // Trace l'itinéraire sur la carte et les différentes étapes du parcours
                     
                     $scope.donnees_du_trajet = response; //permet de récupérer la durée et la distance
@@ -924,6 +922,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                             $scope.transportsStationsProches = results[0];
                         }
                     });
+                    
                     // On affiche le footer avec la distance et la durée
                     $scope.show_donnees_du_trajet = true;
                     if (!(isRecalculation)) {
@@ -946,7 +945,13 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                     } else {
                         $ionicLoading.hide(); // Si c'est un recalcul, il faut juste arrêter de montrer l'icône de chargement
                     }
-
+                    //Si aucun résultat n'a été trouvé (lorsque le mode de transport est transports publics)
+                } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                    $ionicLoading.hide();
+                    $ionicLoading.show({
+                        template: "Aucun itinéraire en transports en commun n'a été trouvé.",
+                        duration: 3000
+                    });
                 }
             });
         }
@@ -954,7 +959,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
 
 
 
-    /*** DONCTION PERMETTANT D'UTILISER L'AUTOCOMPLETION POUR PROPOSER DES CHOIX A l4UTILISATUER ENTRANT UNE ADRESSE ***/
+    /*** FONCTION PERMETTANT D'UTILISER L'AUTOCOMPLETION POUR PROPOSER DES CHOIX A l4UTILISATUER ENTRANT UNE ADRESSE ***/
     
     /**
     *** @param id1 : id de la balise HTML d'où il faut récupérer la city_start et proposer l'autocomplétion
