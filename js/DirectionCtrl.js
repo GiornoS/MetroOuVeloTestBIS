@@ -78,7 +78,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     $scope.choixDeTransport = google.maps.DirectionsTravelMode.BICYCLING;
     $scope.markersToErase = [];
     mytimeout = null; // the current timeoutID
-    counter = 1320;
+    counter = 10;
     $scope.counter = "22:00";
     $scope.showStopwatch = true;
     $scope.showCounter = false;
@@ -107,7 +107,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     // stops and resets the current timer
     $scope.stopTimer = function () {
         $scope.$broadcast('timer-stopped', counter);
-        counter = 1320;
+        counter = 10;
         $scope.counter = "22:00";
         $timeout.cancel(mytimeout);
     };
