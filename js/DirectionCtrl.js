@@ -50,16 +50,17 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     FORECASTIO_KEY = '1706cc9340ee8e2c6c2fecd7b9dc5a1c'; // API key pour récuperer les données météorologiques d'un endroit à un instant donné
     directionsDisplayMiddle = new google.maps.DirectionsRenderer(); // Google Object pour afficher le trajet sur la carte
     directionsDisplayMiddle.setOptions({
+        polylineOptions : {strokeColor : "#be65c6", strokeOpacity : 0.8, strokeWeight : 4},
         suppressMarkers : true
     });
     directionsDisplayStart = new google.maps.DirectionsRenderer(); // Google Object pour afficher le trajet sur la carte
     directionsDisplayStart.setOptions({
-        polylineOptions : {strokeColor : "red", strokeOpacity : 0.8},
+        polylineOptions : {strokeColor : "#2b5fb5", strokeOpacity : 0.8, strokeWeight : 4},
         suppressMarkers : true
     });
     directionsDisplayEnd = new google.maps.DirectionsRenderer(); // Google Object pour afficher le trajet sur la carte
     directionsDisplayEnd.setOptions({
-        polylineOptions : {strokeColor : "red", strokeOpacity : 0.8},
+        polylineOptions : {strokeColor : "#2b5fb5", strokeOpacity : 0.8, strokeWeight : 4},
         suppressMarkers : true
     });
     velibMarker = "res/img/velib.png"; // Adresse de l'icône utilisée pour afficher des stations vélibs dans le cas où il serait impossible de se connecter à l'API vélibs
@@ -79,7 +80,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     $scope.markersToErase = [];
     mytimeout = null; // the current timeoutID
     counter = 10;
-    $scope.counter = "22:00";
+    $scope.counter = "0:10";
     $scope.showStopwatch = true;
     $scope.showCounter = false;
     email = {
@@ -136,7 +137,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     $scope.stopTimer = function () {
         $scope.$broadcast('timer-stopped', counter);
         counter = 10;
-        $scope.counter = "22:00";
+        $scope.counter = "0:10";
         $timeout.cancel(mytimeout);
     };
  
@@ -144,10 +145,12 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     $scope.$on('timer-stopped', function (event, remaining) {
         if (remaining === 0) {
             document.addEventListener("deviceready", function () {
-                // Vibre 100ms
-                $cordovaVibration.vibrate(500);
-                $cordovaVibration.vibrate(500);
+                // Vibre 1000ms
+                $cordovaVibration.vibrate(1000);
+                remaining = 1; // ?????
             }, false);
+            $scope.centerOnMe();
+            $scope.calculate($scope.detailsCityStart, $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true, true);
         }
     });
     
@@ -183,13 +186,13 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
             $scope.veloChoisi = true;
             $scope.choixDeTransport = google.maps.DirectionsTravelMode.BICYCLING;
             // On recalcule le trajet avec le nouveau moyen de transport
-            $scope.calculate($scope.donneesSauvegardees[0], $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true);
+            $scope.calculate($scope.donneesSauvegardees[0], $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true, false);
         } else {
             $scope.metroChoisi = true;
             $scope.veloChoisi = false;
             $scope.choixDeTransport = google.maps.TravelMode.TRANSIT;
             // On recalcule le trajet avec le nouveau moyen de transport
-            $scope.calculate($scope.donneesSauvegardees[0], $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true);
+            $scope.calculate($scope.donneesSauvegardees[0], $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true, false);
         }
     };
 
@@ -986,7 +989,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     *** @return JSONObject $scope.donnees_du_trajet : données du trajet permettat d'afficher la distance à parcourir et le temps prévu pour ce trajet
     *** @return boolean $scope.show_donnees_du_trajet : affiche la carte avec les données du trajet
     **/
-    $scope.calculate = function (city_start, city_end, minute_choisie, heure_choisie, isRecalculation) {
+    $scope.calculate = function (city_start, city_end, minute_choisie, heure_choisie, isRecalculation, forceToUseGeoloc) {
         isPhoneConnected();
         //On efface les markers utilisés précédemment
         for (i = 0; i < $scope.markersToErase.length; i += 1) {
@@ -994,6 +997,7 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
         }
         // Récupère la location de départ voulue (géolocalisation ou adresse entrée)
         var CITYSTART, CITYEND, stationVelibPlusProcheDepart, stationVelibPlusProcheArrivee;
+        
         // On vérifie si c'est la géolocalisation qui est utilisée ou non
         if ($scope.verif_city_start === document.getElementById("city_start").value) {
             CITYSTART = $scope.detailsCityStart;
@@ -1019,7 +1023,9 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
         // Permet de sauvegarder les entrées du dernier chemin calculé dans le cas du recalcule lors d'un changement de moyen de transport
         $scope.donneesSauvegardees = [CITYSTART, CITYEND, minute_choisie, heure_choisie];
         
-        
+        if (forceToUseGeoloc) {
+            CITYSTART = $scope.detailsCityStart;
+        }
         
         if (CITYSTART && CITYEND) {
             stationVelibPlusProche(CITYSTART.geometry.location, true, "depart");

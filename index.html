@@ -86,7 +86,7 @@
                 <a class="button button-icon icon ion-clock clock_depart" ng-click="setTime()"></a>
             
                 <center>
-                    <button ng-click="calculate(detailsCityStart, detailsCityEnd, minute_choisie, heure_choisie, false)" class="button button-outline button-positive validerButtonTrajet" ng-disabled="{{disablingValiderButton}}==2">
+                    <button ng-click="calculate(detailsCityStart, detailsCityEnd, minute_choisie, heure_choisie, false, false)" class="button button-outline button-positive validerButtonTrajet" ng-disabled="{{disablingValiderButton}}==2">
                         Valider
                     </button>
                 </center>
@@ -95,19 +95,6 @@
 		
 
 	</div>        
-    
-
-    <!-- Carte de recommandation qui s'affiche après avoir calculé le trajet  -->
-    <div class="card card_recommandation" ng-show="show_card_recommandation">
-        <div class="item item-text-wrap text_recommandation">
-            <!-- Montrer l'icône d'un vélo ou d'un métro !-->
-<!--
-            <i class="icon ion-android-bicycle"></i>
--->
-            <!-- On affiche la recommandation ainsi que la distance à pied entre la station de vélib la plus proche et la durée du trajet -->
-            <div>Station Vélib la plus proche à : {{donneesVelibPlusProche.distance.value}} m ({{donneesVelibPlusProche.duration.text}})</div>
-        </div>
-    </div>
 
     <!-- Affichage de l'objet map de l'api google (affichage de la carte) -->
     <map id="map" class="map_animation" ng-class="{big_map : sizeMap=='big', small_map : sizeMap=='small'}" data-tap-disabled="true" on-touch="reloadMap()"></map>
@@ -221,18 +208,20 @@
             <h1 class="title"><center>Configuration</center></h1>
         </ion-header-bar>
         <ion-content>
+<!--
             <img class="icon icon-menu" src="res/img/bandeaumetrovelibBIS.png"></img>
+-->
             <ul class="list debut-menu">
                 
                 <div class="item item-divider item-divider-menu">
                     <center>Options</center>
                 </div>
-                <ion-toggle class="menu-options" id="decoupageDuTrajetOption" ng-click="saveSettings(decoupageDuTrajetPref, 1)" ng-model="decoupageDuTrajetPref" ng-checked="decoupageDuTrajetInit">
+<!--                <ion-toggle class="menu-options" id="decoupageDuTrajetOption" ng-click="saveSettings(decoupageDuTrajetPref, 1)" ng-model="decoupageDuTrajetPref" ng-checked="decoupageDuTrajetInit">
                     Découpage du trajet
                 </ion-toggle>
                 <ion-toggle class="menu-options" id="geolocalisationInitialeOption" ng-click="saveSettings(geolocalisationPref, 2)" ng-model="geolocalisationPref" ng-checked="geolocalisationInit">
                     Géolocalisation
-                </ion-toggle> 
+                </ion-toggle> -->
                 <div class="item item-button-right menu-options" ng-click="changeMoyenTransport()">
                      Moyen de transport
                         <img class="icon icon-transport-menu" src="res/img/android-subway.png" ng-show="metroChoisi"></img>
