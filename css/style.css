@@ -8,6 +8,12 @@
     position: absolute;
 }
 
+.icon-stopwatch-header
+{
+    position: absolute;
+    right: 0px;
+}
+
 
 /*
  DEFINIR UN TRAJET

@@ -48,8 +48,12 @@
     <!-- Le bandeau supérieur avec le nom de l'application -->
     <header class="bar-positive bar-header bar header_definir_un_trajet">
         <button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
-        <h1 class="title Titre-Appli">{{Titre_Recommandation}}<!--<button class="button button-icon icon ion-help" ng-show="show_card_recommandation" ng-click="openModal(4)"></button>--></h1>
-        <div class="button button-clear" ng-click="openModal(2)"><span class="icon ion-information-circled"></span></div>
+        <h1 class="title Titre-Appli">{{Titre_Recommandation}}</h1>
+        <button class="button button-icon icon icon-stopwatch-header ion-android-stopwatch" ng-show="showStopwatch" ng-click="timerTrigger()"></button>
+        <button class="button" ng-show="showCounter" ng-click="timerStopper()">{{counter}}</button>
+
+        
+
     </header>
 <ion-content>
 
@@ -79,7 +83,7 @@
                 <button class="button button-clear hour_select_definir_un_trajet" ng-click="openDatePicker()">
                     {{heure_choisie}} : {{minute_choisie}}
                 </button>
-                <a class="button button-icon icon ion-android-stopwatch clock_depart" ng-click="setTime()"></a>
+                <a class="button button-icon icon ion-clock clock_depart" ng-click="setTime()"></a>
             
                 <center>
                     <button ng-click="calculate(detailsCityStart, detailsCityEnd, minute_choisie, heure_choisie, false)" class="button button-outline button-positive validerButtonTrajet" ng-disabled="{{disablingValiderButton}}==2">
@@ -116,7 +120,9 @@
 <!--	<img class="button button-icon icon" src="res/img/android-locate-bis.png" id="geolocate_button" ng-click="centerOnMe()" ng-show="isKeyboardNotVisible()"></img>-->
 	<img class="button button-icon icon" src="res/img/Plus.png" id="navigate_button" ng-click="showCard()" ng-show="showButtonsOnMap"></img>
     <img class="button button-icon icon" src="res/img/android-bicycle-button.png" id="bicycle_button" ng-click="displayVelibStations()" ng-show="showButtonsOnMap"></img>
+<!--
     <img class="button button-icon icon" src="res/img/android-navigate-bisbis.png" id="cutButton" ng-click="cutThePath()" ng-show="showButtonsOnMap"></img>
+-->
 
 
 	<!--Footer qui affiche le temps de trajet et la distance   -->
@@ -234,6 +240,11 @@
                 </div>
             </ul>
             <ul class="list fin-menu">
+                <!--        <div class="button button-clear" ng-click="openModal(2)"><span class="icon ion-information-circled"></span></div>-->
+                 <a class="item item-icon-left item-positive" ng-click="openModal(2)">
+                    <i class="icon ion-information-circled"></i>
+                    Besoin d'aide ?
+                </a>               
                 <a class="item item-icon-left item-positive" ng-click="">
                     <i class="icon ion-email"></i>
                     Envoyer un commentaire
