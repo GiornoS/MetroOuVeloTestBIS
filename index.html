@@ -118,11 +118,11 @@
         <div class="item tabs tabs-secondary tabs-icon-left" ng-click="openModal(1)">
             <a class="tab-item">
               <i class="icon ion-map"></i>
-              <strong style="font-size:130%;">{{donnees_du_trajet.routes[0].legs[0].distance.text}}</strong>
+              <strong style="font-size:130%;">{{effectiveDistance}}</strong>
             </a>
             <a class="tab-item">
               <i class="icon ion-clock"></i>
-              <strong style="font-size:130%;">{{donnees_du_trajet.routes[0].legs[0].duration.text}}</strong>
+              <strong style="font-size:130%;">{{effectiveDuration}}</strong>
                 
             </a>
             
@@ -133,11 +133,11 @@
                         <h1 class="title"> 
                             <div class="km_modal" ng-click="closeModal()">
                                 <i class="icon ion-map"></i>
-                                <strong style="font-size:130%;">{{donnees_du_trajet.routes[0].legs[0].distance.text}}</strong>
+                                <strong style="font-size:130%;">{{effectiveDistance}}</strong>
                             </div>
                             <div class="h_modal" ng-click="closeModal()">
                                 <i class="icon ion-clock"></i>
-                                <strong style="font-size:130%;">{{donnees_du_trajet.routes[0].legs[0].duration.text}}</strong>
+                                <strong style="font-size:130%;">{{effectiveDuration}}</strong>
                             </div>
                         </h1>
                     </div>

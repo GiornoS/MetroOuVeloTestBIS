@@ -149,8 +149,20 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                 $cordovaVibration.vibrate(1000);
                 remaining = 1; // ?????
             }, false);
+/*            navigator.geolocation.getCurrentPosition(function (pos) {
+                alert('pos');
+                $scope.calculate(pos, $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true, true);
+            }, function (error) {
+                $ionicLoading.show({
+                    template: "Impossible de récupérer la géolocalisation. Veuillez vérifier vos paramètres et votre connexion.",
+                    duration: 2000
+                });
+            }, {
+                timeout: 15000
+            });*/
             $scope.centerOnMe();
             $scope.calculate($scope.detailsCityStart, $scope.donneesSauvegardees[1], $scope.donneesSauvegardees[2], $scope.donneesSauvegardees[3], true, true);
+            
         }
     });
     
@@ -202,7 +214,6 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
     /**
     ***
     **/
-    
     
 /*    function cutThePathAnnexe(j) {
         var currentTimeOfSteps = 0, i = j, numberOfDivision, cutAStep, placeToStop, realCurrentTimeOfSteps = 0, timeToSubstract, distanceInLastStep = 0, indiceOfStopStep = 0, multiplicator;
@@ -1026,7 +1037,6 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
         if (forceToUseGeoloc) {
             CITYSTART = $scope.detailsCityStart;
         }
-        
         if (CITYSTART && CITYEND) {
             stationVelibPlusProche(CITYSTART.geometry.location, true, "depart");
             stationVelibPlusProche(CITYEND.geometry.location, true, "arrivee");
@@ -1105,12 +1115,30 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                 directionsService.route(request, function (response, status) { // Envoie de la requête pour calculer le parcours
                     if (status === google.maps.DirectionsStatus.OK) {
                         if ($scope.choixDeTransport === google.maps.DirectionsTravelMode.BICYCLING) {
+                            // On affiche tous les morceaux du trajet sur la carte
+                            directionsDisplayStart.setMap($scope.map);
+                            directionsDisplayEnd.setMap($scope.map);
+                            
+                            if (response.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].distance.value > 1000) {
+                                $scope.effectiveDistance = Math.floor((response.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].distance.value) / 100, 3)/10 + " km";
+                            } else {
+                                $scope.effectiveDistance = response.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].distance.value;
+                            }
+
+                            if (response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value > 3600) {
+                                $scope.effectiveDuration = (response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value - (response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value) % 3600) / 3600 + " h " + (((response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value) % 3600) - ((response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value) % 3600) % 60) / 60 + " min";
+                            } else if (response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value > 60) {
+                                $scope.effectiveDuration = (response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value - (response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value) % 60) / 60 + " minutes";
+                            } else {
+                                $scope.effectiveDuration = response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value + " s";
+                            }
+                            
+                            $scope.donneesEffectivesDuTrajet = {duration : response.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].duration.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].duration.value , distance : response.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheArrivee.donneesTrajet.routes[0].legs[0].distance.value + $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].distance.value }
                             $scope.donneesVelibPlusProcheArrivee.station.setOptions({visible : true});
                             $scope.donneesVelibPlusProcheArrivee.station.setMap($scope.map);
                             $scope.donneesVelibPlusProcheDepart.station.setOptions({visible : true});
                             $scope.donneesVelibPlusProcheDepart.station.setMap($scope.map);
-
-
+                            
                             var markerDepart, markerArrivee;
                             markerDepart = new google.maps.Marker({
                                 position: $scope.donneesVelibPlusProcheDepart.donneesTrajet.routes[0].legs[0].start_location,
@@ -1129,6 +1157,8 @@ function DirectionCtrl($scope, $http, $ionicLoading, $compile, $cordovaGoogleAna
                             directionsDisplayEnd.setDirections($scope.donneesVelibPlusProcheArrivee.donneesTrajet); // Trace l'itinéraire sur la carte et les différentes étapes du parcours
                             directionsDisplayMiddle.setDirections(response); // Trace l'itinéraire sur la carte et les différentes étapes du parcours
                         } else {
+                            $scope.effectiveDistance = response.routes[0].legs[0].distance.text;
+                            $scope.effectiveDuration = response.routes[0].legs[0].duration.text;
                             // On désaffiche les morceux de routes correspondant aux parties à pied
                             directionsDisplayStart.setMap(null);
                             directionsDisplayEnd.setMap(null);
