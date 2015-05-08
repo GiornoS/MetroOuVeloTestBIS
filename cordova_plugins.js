@@ -57,6 +57,14 @@ module.exports = [
             "navigator.notification",
             "navigator"
         ]
+    },
+    {
+        "file": "plugins/de.appplant.cordova.plugin.email-composer/www/email_composer.js",
+        "id": "de.appplant.cordova.plugin.email-composer.EmailComposer",
+        "clobbers": [
+            "cordova.plugins.email",
+            "plugin.email"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -70,7 +78,8 @@ module.exports.metadata =
     "com.danielcwilson.plugins.googleanalytics": "0.6.1",
     "com.plugin.datepicker": "0.5.0",
     "org.apache.cordova.network-information": "0.2.15",
-    "org.apache.cordova.vibration": "0.3.13"
+    "org.apache.cordova.vibration": "0.3.13",
+    "de.appplant.cordova.plugin.email-composer": "0.8.2"
 }
 // BOTTOM OF METADATA
 });
